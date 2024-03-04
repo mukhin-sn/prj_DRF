@@ -88,7 +88,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+.venv/Lib/
 lib64/
 parts/
 sdist/
@@ -166,3 +166,4 @@ ENV/
 
 # mkdocs documentation
 /site
+/.venv/
