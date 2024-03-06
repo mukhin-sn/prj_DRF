@@ -17,11 +17,11 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Название урока')
+    name = models.CharField(max_length=100, verbose_name='название урока')
     description = models.TextField(verbose_name='описание', **NULLABLE)
     preview = models.ImageField(upload_to='lessons/preview/', verbose_name='превью', **NULLABLE)
     link_to_video = models.CharField(max_length=255, verbose_name='ссылка на видео', **NULLABLE)
-    course = models.ManyToManyField(Course)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, max_length=100, verbose_name='курс')
 
     def __str__(self):
         return f'{self.name} '
