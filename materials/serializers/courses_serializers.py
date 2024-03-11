@@ -6,7 +6,7 @@ from materials.serializers.lessons_serializers import LessonSerializer
 
 class CourseSerializer(ModelSerializer):
     count_lessons = SerializerMethodField()
-    lessons = LessonSerializer(source='lessons_set', many=True, read_only=True)
+    lessons = LessonSerializer(source='lesson_set', many=True)
 
     def get_count_lessons(self, obj):
         return Lesson.objects.filter(course=obj).count()
