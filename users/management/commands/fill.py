@@ -12,22 +12,28 @@ class Command(BaseCommand):
                 "pk": 1,
                 "email": "ivanov@gmail.com",
                 "first_name": "Иван",
+                "last_name": "Иванов",
                 "password": "111111",
                 "is_active": True,
+                "city": "Ынахсыт",
             },
             {
                 "pk": 2,
                 "email": "petrov@gmail.com",
                 "first_name": "Петр",
+                "last_name": "Петров",
                 "password": "222222",
                 "is_active": True,
+                "city": "Ытык-Кюёль",
             },
             {
                 "pk": 3,
                 "email": "sidorov@gmail.com",
                 "first_name": "Сидор",
+                "last_name": "Сидоров",
                 "password": "333333",
                 "is_active": True,
+                "city": "Ыллымах",
             }
 
         ]
@@ -48,13 +54,55 @@ class Command(BaseCommand):
         ]
 
         payments_list = [
-            {"user_id": 1, "paid_course_id": 1, "pay_amount": 150000, "pay_method": "bank transfer"},
-            {"user_id": 1, "paid_course_id": 2, "pay_amount": 200000, "pay_method": "bank transfer"},
-            {"user_id": 2, "paid_course_id": 3, "pay_amount": 120000, "pay_method": "bank transfer"},
-            {"user_id": 2, "paid_lesson_id": 6, "pay_amount": 10000, "pay_method": "bank transfer"},
-            {"user_id": 3, "paid_course_id": 1, "pay_amount": 150000, "pay_method": "bank transfer"},
-            {"user_id": 3, "paid_course_id": 3, "pay_amount": 120000, "pay_method": "bank transfer"},
-            {"user_id": 3, "paid_lesson_id": 5, "pay_amount": 15000, "pay_method": "bank transfer"}
+            {
+                "user_id": 1,
+                "paid_course_id": 1,
+                "pay_amount": 150000,
+                "pay_method": "bank transfer",
+                "date_of_pay": "2022-10-25"
+            },
+            {
+                "user_id": 1,
+                "paid_course_id": 2,
+                "pay_amount": 200000,
+                "pay_method": "cash",
+                "date_of_pay": "2022-12-5"
+            },
+            {
+                "user_id": 2,
+                "paid_course_id": 3,
+                "pay_amount": 120000,
+                "pay_method": "bank transfer",
+                "date_of_pay": "2021-7-21"
+            },
+            {
+                "user_id": 2,
+                "paid_lesson_id": 6,
+                "pay_amount": 10000,
+                "pay_method": "bank transfer",
+                "date_of_pay": "2022-5-15"
+            },
+            {
+                "user_id": 3,
+                "paid_course_id": 1,
+                "pay_amount": 150000,
+                "pay_method": "cash",
+                "date_of_pay": "2023-6-6"
+            },
+            {
+                "user_id": 3,
+                "paid_course_id": 3,
+                "pay_amount": 120000,
+                "pay_method": "bank transfer",
+                "date_of_pay": "2023-9-13"
+            },
+            {
+                "user_id": 3,
+                "paid_lesson_id": 5,
+                "pay_amount": 15000,
+                "pay_method": "cash",
+                "date_of_pay": "2022-12-20"
+            }
         ]
 
         User.objects.all().delete()
