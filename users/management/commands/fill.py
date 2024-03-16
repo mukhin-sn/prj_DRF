@@ -105,29 +105,41 @@ class Command(BaseCommand):
             }
         ]
 
-        User.objects.all().delete()
-        Course.objects.all().delete()
-        Lesson.objects.all().delete()
-        Payment.objects.all().delete()
+        def load_data_to_db(cls, list_data):
+            data_load = []
+            for item_ in list_data:
+                data_load.append(cls(**item_))
+            cls.objects.all().delete()
+            cls.objects.bulk_create(data_load)
 
-        for_create = []
+        load_data_to_db(User, users_list)
+        load_data_to_db(Course, courses_list)
+        load_data_to_db(Lesson, lessons_list)
+        load_data_to_db(Payment, payments_list)
 
-        for users_item in users_list:
-            for_create.append(User(**users_item))
-        User.objects.bulk_create(for_create)
-        for_create.clear()
+        # User.objects.all().delete()
+        # Course.objects.all().delete()
+        # Lesson.objects.all().delete()
+        # Payment.objects.all().delete()
 
-        for courses_item in courses_list:
-            for_create.append(Course(**courses_item))
-        Course.objects.bulk_create(for_create)
-        for_create.clear()
+        # for_create = []
 
-        for lessons_item in lessons_list:
-            for_create.append(Lesson(**lessons_item))
-        Lesson.objects.bulk_create(for_create)
-        for_create.clear()
+        # for users_item in users_list:
+        #     for_create.append(User(**users_item))
+        # User.objects.bulk_create(for_create)
+        # for_create.clear()
 
-        for payments_item in payments_list:
-            for_create.append(Payment(**payments_item))
-        Payment.objects.bulk_create(for_create)
-        for_create.clear()
+        # for courses_item in courses_list:
+        #     for_create.append(Course(**courses_item))
+        # Course.objects.bulk_create(for_create)
+        # for_create.clear()
+        #
+        # for lessons_item in lessons_list:
+        #     for_create.append(Lesson(**lessons_item))
+        # Lesson.objects.bulk_create(for_create)
+        # for_create.clear()
+        #
+        # for payments_item in payments_list:
+        #     for_create.append(Payment(**payments_item))
+        # Payment.objects.bulk_create(for_create)
+        # for_create.clear()
