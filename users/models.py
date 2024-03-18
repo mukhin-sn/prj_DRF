@@ -4,11 +4,16 @@ from django.contrib.auth.models import AbstractUser
 
 from materials.models import Course, Lesson, NULLABLE
 
+
 # NULLABLE = {'null': True, 'blank': True}
+class Roles(models.TextChoices):
+    USER = "user"
+    MODERATOR = "moderator"
 
 
 class User(AbstractUser):
     username = None
+    role = models.CharField(max_length=25, choices=Roles.choices, default=Roles.USER)
     first_name = models.CharField(max_length=100, verbose_name='имя')
     middle_name = models.CharField(max_length=100, verbose_name='отчество', **NULLABLE)
     last_name = models.CharField(max_length=100, verbose_name='фамилия', **NULLABLE)

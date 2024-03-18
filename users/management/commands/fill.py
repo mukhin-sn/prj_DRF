@@ -15,6 +15,8 @@ class Command(BaseCommand):
                 "last_name": "Иванов",
                 "password": "111111",
                 "is_active": True,
+                "is_staff": True,
+                "is_superuser": True,
                 "city": "Ынахсыт",
             },
             {
@@ -24,6 +26,8 @@ class Command(BaseCommand):
                 "last_name": "Петров",
                 "password": "222222",
                 "is_active": True,
+                "is_staff": True,
+                "is_superuser": False,
                 "city": "Ытык-Кюёль",
             },
             {
@@ -33,6 +37,8 @@ class Command(BaseCommand):
                 "last_name": "Сидоров",
                 "password": "333333",
                 "is_active": True,
+                "is_staff": False,
+                "is_superuser": False,
                 "city": "Ыллымах",
             }
 
@@ -107,10 +113,25 @@ class Command(BaseCommand):
 
         def load_data_to_db(cls, list_data):
             data_load = []
-            for item_ in list_data:
-                data_load.append(cls(**item_))
             cls.objects.all().delete()
-            cls.objects.bulk_create(data_load)
+            for item_ in list_data:
+                if "password" in item_:
+                    user = cls.objects.create(
+                        email=item_["email"],
+                        pk=item_["pk"],
+                        first_name=item_["first_name"],
+                        last_name=item_["last_name"],
+                        city=item_["city"],
+                        is_superuser=item_["is_superuser"],
+                        is_staff=item_["is_staff"],
+                        is_active=item_["is_active"]
+                    )
+                    user.set_password(item_["password"])
+                    user.save()
+                else:
+                    data_load.append(cls(**item_))
+                    cls.objects.all().delete()
+                    cls.objects.bulk_create(data_load)
 
         load_data_to_db(User, users_list)
         load_data_to_db(Course, courses_list)
