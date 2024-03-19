@@ -130,8 +130,8 @@ class Command(BaseCommand):
                     user.save()
                 else:
                     data_load.append(cls(**item_))
-                    cls.objects.all().delete()
-                    cls.objects.bulk_create(data_load)
+            if data_load:
+                cls.objects.bulk_create(data_load)
 
         load_data_to_db(User, users_list)
         load_data_to_db(Course, courses_list)
