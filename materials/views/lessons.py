@@ -8,13 +8,13 @@ from users.permissions import IsModer
 
 class LessonCreateView(CreateAPIView):
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ~IsModer]
 
 
 class LessonListView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsModer]
 
 
 class LessonUpdateView(UpdateAPIView):
@@ -32,5 +32,5 @@ class LessonRetrieveView(RetrieveAPIView):
 class LessonDestroyView(DestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ~IsModer]
 
