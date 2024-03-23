@@ -8,13 +8,19 @@ from materials.serializers.courses_serializers import CourseSerializer, CreateCo
 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
-    serializer_class = CourseSerializer
+    # serializer_class = CourseSerializer
+    default_serializer = CourseSerializer
+    dict_serializer = {
+        'create': CreateCourseSerializer,
+    }
 
-    def create(self, request, *args, **kwargs):
-        serializer = CreateCourseSerializer()
-        return Response(serializer.data)
+    def get_serializer_class(self):
+        return self.dict_serializer.get(self.action, self.default_serializer)
 
-
+    # def create(self, request, *args, **kwargs):
+    #     serializer = CreateCourseSerializer()
+    #     return Response(serializer.data)
+    #
     def get_permissions(self):
         if self.action == 'create':
             self.permission_classes = [IsAuthenticated, ~IsModer]
