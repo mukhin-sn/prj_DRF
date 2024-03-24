@@ -15,7 +15,10 @@ class Command(BaseCommand):
                 "last_name": "Иванов",
                 "password": "111111",
                 "is_active": True,
+                "is_staff": True,
+                "is_superuser": True,
                 "city": "Ынахсыт",
+                "role": "user",
             },
             {
                 "pk": 2,
@@ -24,7 +27,10 @@ class Command(BaseCommand):
                 "last_name": "Петров",
                 "password": "222222",
                 "is_active": True,
+                "is_staff": True,
+                "is_superuser": False,
                 "city": "Ытык-Кюёль",
+                "role": "moderator",
             },
             {
                 "pk": 3,
@@ -33,24 +39,27 @@ class Command(BaseCommand):
                 "last_name": "Сидоров",
                 "password": "333333",
                 "is_active": True,
+                "is_staff": False,
+                "is_superuser": False,
                 "city": "Ыллымах",
+                "role": "user",
             }
 
         ]
 
         courses_list = [
-            {"pk": 1, "name": "Pytho develop", },
-            {"pk": 2, "name": "Java develop", },
-            {"pk": 3, "name": "JavaScript", }
+            {"pk": 1, "name": "Pytho develop", "master_id": 3},
+            {"pk": 2, "name": "Java develop", "master_id": 2},
+            {"pk": 3, "name": "JavaScript", "master_id": 1}
         ]
 
         lessons_list = [
-            {"pk": 1, "name": "Django", "course_id": 1},
-            {"pk": 2, "name": "DRF", "course_id": 1},
-            {"pk": 3, "name": "React", "course_id": 3},
-            {"pk": 4, "name": "Angular", "course_id": 3},
-            {"pk": 5, "name": "Java for beginners", "course_id": 2},
-            {"pk": 6, "name": "Git", "course_id": 1}
+            {"pk": 1, "name": "Django", "course_id": 1, "master_id": 3},
+            {"pk": 2, "name": "DRF", "course_id": 1, "master_id": 3},
+            {"pk": 3, "name": "React", "course_id": 3, "master_id": 1},
+            {"pk": 4, "name": "Angular", "course_id": 3, "master_id": 1},
+            {"pk": 5, "name": "Java for beginners", "course_id": 2, "master_id": 2},
+            {"pk": 6, "name": "Git", "course_id": 1, "master_id": 3}
         ]
 
         payments_list = [
@@ -105,29 +114,57 @@ class Command(BaseCommand):
             }
         ]
 
-        User.objects.all().delete()
-        Course.objects.all().delete()
-        Lesson.objects.all().delete()
-        Payment.objects.all().delete()
+        def load_data_to_db(cls, list_data):
+            data_load = []
+            cls.objects.all().delete()
+            for item_ in list_data:
+                if "password" in item_:
+                    user = cls.objects.create(
+                        email=item_["email"],
+                        pk=item_["pk"],
+                        first_name=item_["first_name"],
+                        last_name=item_["last_name"],
+                        city=item_["city"],
+                        is_superuser=item_["is_superuser"],
+                        is_staff=item_["is_staff"],
+                        is_active=item_["is_active"],
+                        role=item_["role"]
+                    )
+                    user.set_password(item_["password"])
+                    user.save()
+                else:
+                    data_load.append(cls(**item_))
+            if data_load:
+                cls.objects.bulk_create(data_load)
 
-        for_create = []
+        load_data_to_db(User, users_list)
+        load_data_to_db(Course, courses_list)
+        load_data_to_db(Lesson, lessons_list)
+        load_data_to_db(Payment, payments_list)
 
-        for users_item in users_list:
-            for_create.append(User(**users_item))
-        User.objects.bulk_create(for_create)
-        for_create.clear()
+        # User.objects.all().delete()
+        # Course.objects.all().delete()
+        # Lesson.objects.all().delete()
+        # Payment.objects.all().delete()
 
-        for courses_item in courses_list:
-            for_create.append(Course(**courses_item))
-        Course.objects.bulk_create(for_create)
-        for_create.clear()
+        # for_create = []
 
-        for lessons_item in lessons_list:
-            for_create.append(Lesson(**lessons_item))
-        Lesson.objects.bulk_create(for_create)
-        for_create.clear()
+        # for users_item in users_list:
+        #     for_create.append(User(**users_item))
+        # User.objects.bulk_create(for_create)
+        # for_create.clear()
 
-        for payments_item in payments_list:
-            for_create.append(Payment(**payments_item))
-        Payment.objects.bulk_create(for_create)
-        for_create.clear()
+        # for courses_item in courses_list:
+        #     for_create.append(Course(**courses_item))
+        # Course.objects.bulk_create(for_create)
+        # for_create.clear()
+        #
+        # for lessons_item in lessons_list:
+        #     for_create.append(Lesson(**lessons_item))
+        # Lesson.objects.bulk_create(for_create)
+        # for_create.clear()
+        #
+        # for payments_item in payments_list:
+        #     for_create.append(Payment(**payments_item))
+        # Payment.objects.bulk_create(for_create)
+        # for_create.clear()

@@ -13,5 +13,11 @@ class CourseSerializer(ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'preview', 'count_lessons', 'lessons')
+        fields = ('id', 'name', 'description', 'preview', 'master', 'count_lessons', 'lessons')
         # fields = "__all__"
+
+
+class CreateCourseSerializer(ModelSerializer):
+    class Meta:
+        model = Course
+        fields = "__all__"
