@@ -18,6 +18,7 @@ class Command(BaseCommand):
                 "is_staff": True,
                 "is_superuser": True,
                 "city": "Ынахсыт",
+                "role": "user",
             },
             {
                 "pk": 2,
@@ -29,6 +30,7 @@ class Command(BaseCommand):
                 "is_staff": True,
                 "is_superuser": False,
                 "city": "Ытык-Кюёль",
+                "role": "moderator",
             },
             {
                 "pk": 3,
@@ -40,23 +42,24 @@ class Command(BaseCommand):
                 "is_staff": False,
                 "is_superuser": False,
                 "city": "Ыллымах",
+                "role": "user",
             }
 
         ]
 
         courses_list = [
-            {"pk": 1, "name": "Pytho develop", },
-            {"pk": 2, "name": "Java develop", },
-            {"pk": 3, "name": "JavaScript", }
+            {"pk": 1, "name": "Pytho develop", "master_id": 3},
+            {"pk": 2, "name": "Java develop", "master_id": 2},
+            {"pk": 3, "name": "JavaScript", "master_id": 1}
         ]
 
         lessons_list = [
-            {"pk": 1, "name": "Django", "course_id": 1},
-            {"pk": 2, "name": "DRF", "course_id": 1},
-            {"pk": 3, "name": "React", "course_id": 3},
-            {"pk": 4, "name": "Angular", "course_id": 3},
-            {"pk": 5, "name": "Java for beginners", "course_id": 2},
-            {"pk": 6, "name": "Git", "course_id": 1}
+            {"pk": 1, "name": "Django", "course_id": 1, "master_id": 3},
+            {"pk": 2, "name": "DRF", "course_id": 1, "master_id": 3},
+            {"pk": 3, "name": "React", "course_id": 3, "master_id": 1},
+            {"pk": 4, "name": "Angular", "course_id": 3, "master_id": 1},
+            {"pk": 5, "name": "Java for beginners", "course_id": 2, "master_id": 2},
+            {"pk": 6, "name": "Git", "course_id": 1, "master_id": 3}
         ]
 
         payments_list = [
@@ -124,7 +127,8 @@ class Command(BaseCommand):
                         city=item_["city"],
                         is_superuser=item_["is_superuser"],
                         is_staff=item_["is_staff"],
-                        is_active=item_["is_active"]
+                        is_active=item_["is_active"],
+                        role=item_["role"]
                     )
                     user.set_password(item_["password"])
                     user.save()

@@ -8,28 +8,26 @@ from materials.serializers.courses_serializers import CourseSerializer, CreateCo
 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
-    # serializer_class = CourseSerializer
     default_serializer = CourseSerializer
     dict_serializer = {
         'create': CreateCourseSerializer,
     }
 
+    def perform_create(self, serializer):
+        serializer.save(master=self.request.user)
+
     def get_serializer_class(self):
         return self.dict_serializer.get(self.action, self.default_serializer)
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = CreateCourseSerializer()
-    #     return Response(serializer.data)
-    #
     def get_permissions(self):
         if self.action == 'create':
             self.permission_classes = [IsAuthenticated, ~IsModer]
         elif self.action == 'list':
-            self.permission_classes = [IsAuthenticated | IsModer]
+            self.permission_classes = [IsAuthenticated, IsMaster | IsModer]
         elif self.action == 'retrieve':
-            self.permission_classes = [IsAuthenticated, IsModer]
+            self.permission_classes = [IsAuthenticated, IsMaster | IsModer]
         elif self.action == 'update':
-            self.permission_classes = [IsAuthenticated, IsModer]
+            self.permission_classes = [IsAuthenticated, IsMaster | IsModer]
         elif self.action == 'destroy':
-            self.permission_classes = [IsAuthenticated, ~IsModer]
+            self.permission_classes = [IsAuthenticated, IsMaster]
         return [permission() for permission in self.permission_classes]
