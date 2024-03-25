@@ -1,8 +1,8 @@
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from users.permissions import IsModer, IsMaster
 from materials.models import Course
+from users.models import Roles
 from materials.serializers.courses_serializers import CourseSerializer, CreateCourseSerializer
 
 
@@ -12,6 +12,12 @@ class CourseViewSet(ModelViewSet):
     dict_serializer = {
         'create': CreateCourseSerializer,
     }
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.role != Roles.MODERATOR:
+            queryset = queryset.filter(master=self.request.user)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(master=self.request.user)

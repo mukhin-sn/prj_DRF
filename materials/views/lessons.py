@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from materials.models import Lesson
 from materials.serializers.lessons_serializers import LessonSerializer
+from users.models import Roles
 from users.permissions import IsModer, IsMaster
 
 
@@ -20,6 +21,12 @@ class LessonListView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsMaster | IsModer]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.user.role != Roles.MODERATOR:
+            queryset = queryset.filter(master=self.request.user)
+        return queryset
 
 
 class LessonUpdateView(UpdateAPIView):
