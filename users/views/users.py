@@ -1,16 +1,10 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
 
 from users.models import User
-from users.permissions import IsUser, IsOwner
+from users.permissions import IsUser
 from users.serializers.users_serializer import UserSerializer, CreateUserSerializer, GeneralUserSerializer
 
-
-# class UserViewSet(ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()

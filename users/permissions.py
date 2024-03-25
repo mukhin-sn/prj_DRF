@@ -15,5 +15,4 @@ class IsMaster(BasePermission):
 
 class IsUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        print(request.user.pk == obj.pk)
         return request.user.pk == obj.pk
