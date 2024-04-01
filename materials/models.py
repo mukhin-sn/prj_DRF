@@ -38,7 +38,7 @@ class Lesson(models.Model):
         verbose_name_plural = 'уроки'
 
 
-class UpdateSubscription(models.Model):
+class Subscription(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='владелец', **NULLABLE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, max_length=100, verbose_name='курс')
 
