@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, get_object_or_404
+from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,8 +14,8 @@ class SubscriptionListView(ListAPIView):
 
 
 class SubscriptionAPIView(APIView):
-    # serializer_class = SubscriptionSerializer
-    # permission_classes = [IsAuthenticated]
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated]
 
     # def perform_create(self, serializer):
     #     obj = serializer.save()
@@ -26,18 +26,24 @@ class SubscriptionAPIView(APIView):
     #     obj.save()
 
     def post(self, *args, **kwargs):
+        # получаем из запроса юзера
         user = self.request.user
+
+        # получаем из запроса id - курса
         course_id = self.request.data.get("course")
+
+        # получаем данные о подписке (если подписки нет, то создаем подписку)
         course_item = get_object_or_404(Course, pk=course_id)
-        subscription, subs_items = Subscription.objects.get_or_create(user=user, course=course_item)
-        if subs_items.exists():
-            message = "Подписка удалена"
-        else:
+        subs_items, subs_value = Subscription.objects.get_or_create(user=user, course=course_item)
+        if subs_value:
             message = "Подписка создана"
+        else:
+            subs_items.delete()
+            message = "Подписка удалена"
         return Response({"message": message})
 
 
-class SubscriptionDestroyView(DestroyAPIView):
-    queryset = Subscription.objects.all()
-    serializer_class = SubscriptionSerializer
-    permission_classes = [IsAuthenticated]
+# class SubscriptionDestroyView(DestroyAPIView):
+#     queryset = Subscription.objects.all()
+#     serializer_class = SubscriptionSerializer
+#     permission_classes = [IsAuthenticated]

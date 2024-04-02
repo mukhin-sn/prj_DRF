@@ -4,7 +4,7 @@ from materials.apps import MaterialsConfig
 from materials.views.lessons import (LessonCreateView, LessonListView, LessonUpdateView, LessonRetrieveView,
                                      LessonDestroyView)
 from materials.views.courses import CourseViewSet
-from materials.views.subscription import SubscriptionCreateView, SubscriptionDestroyView, SubscriptionListView
+from materials.views.subscription import SubscriptionListView, SubscriptionAPIView
 
 app_name = MaterialsConfig.name
 
@@ -20,7 +20,7 @@ urlpatterns = [
     path('lesson/delete/<int:pk>/', LessonDestroyView.as_view(), name='lesson_delete'),
 
     path('subscription/', SubscriptionListView.as_view(), name='subscription'),
-    path('subscription/create/', SubscriptionCreateView.as_view(), name='subscription_create'),
-    path('subscription/delete/<int:pk>/', SubscriptionDestroyView.as_view(), name='subscription_delete'),
+    path('subscription/create/', SubscriptionAPIView.as_view(), name='subscription_create'),
+    # path('subscription/delete/<int:pk>/', SubscriptionDestroyView.as_view(), name='subscription_delete'),
 
 ] + router.urls
