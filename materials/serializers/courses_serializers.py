@@ -16,8 +16,6 @@ class CourseSerializer(ModelSerializer):
         queryset = Subscription.objects.filter(course=obj)
         if queryset:
             return 'Подписка на курс оформлена'
-
-        # Subscription.objects.filter(course=obj['id'])
         return 'Подписка на курс удалена'
 
     class Meta:
