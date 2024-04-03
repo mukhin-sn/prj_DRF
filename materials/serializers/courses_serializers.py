@@ -13,12 +13,16 @@ class CourseSerializer(ModelSerializer):
         return Lesson.objects.filter(course=obj).count()
 
     def get_subs_course(self, obj):
-        queryset = Subscription.objects.filter(course=obj.course)
-        return Subscription.objects.filter(course=obj['id'])
+        queryset = Subscription.objects.filter(course=obj)
+        if queryset:
+            return 'Подписка на курс оформлена'
+
+        # Subscription.objects.filter(course=obj['id'])
+        return 'Подписка на курс удалена'
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'preview', 'master', 'count_lessons', 'lessons', 'subs_course')
+        fields = ('id', 'name', 'description', 'preview', 'master', 'count_lessons', 'subs_course', 'lessons')
         # fields = "__all__"
 
 
