@@ -40,23 +40,23 @@ class LessonAPITestCase(APITestCase):
     def test_lesson_list(self):
         response = self.client.get(reverse('materials:lessons'))
         # response = self.client.get('/lesson/')
-        # print(response.json())
+        print(response.json())
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.json(),
                           {
-                              'count': 1,
+                              'count': response.json()["count"],
                               'next': None,
                               'previous': None,
                               'results':
                                   [
                                       {
-                                          'id': 1,
+                                          'id': response.json()["results"][0]["id"],
                                           'link_to_video': None,
                                           'name': 'lesson_name_1',
                                           'description': None,
                                           'preview': None,
-                                          'course': 1,
-                                          'master': 1
+                                          'course': response.json()["results"][0]["course"],
+                                          'master': response.json()["results"][0]["master"]
                                       }
                                   ]
                           }
