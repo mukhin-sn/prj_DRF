@@ -72,5 +72,19 @@ class LessonAPITestCase(APITestCase):
         }
 
         response = self.client.post(reverse('materials:lesson_create'), data=data)
-        print(response.json())
+        # print(response.json())
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+
+    def test_lesson_update(self):
+        data = {
+            "link_to_video": "https://youtube.com"
+        }
+        response = self.client.patch(reverse(f'lesson/update/{4}/'), data=data)
+        print(response.status_code)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+
+    def test_lesson_retrieve(self):
+        pass
+
+    def test_lesson_destroy(self):
+        pass
