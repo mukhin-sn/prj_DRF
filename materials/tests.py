@@ -38,9 +38,10 @@ class LessonAPITestCase(APITestCase):
 
     # Тесты
     def test_lesson_list(self):
+        """Тест вывода списка уроков"""
         response = self.client.get(reverse('materials:lessons'))
         # response = self.client.get('/lesson/')
-        print(response.json())
+        print('List lessons\n', response.json())
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.json(),
                           {
@@ -63,6 +64,7 @@ class LessonAPITestCase(APITestCase):
                           )
 
     def test_lesson_create(self):
+        """Тест создания урока"""
         # print(self.course_1, self.user_tst)
         data = {
             "name": "lesson_name_2",
@@ -72,19 +74,28 @@ class LessonAPITestCase(APITestCase):
         }
 
         response = self.client.post(reverse('materials:lesson_create'), data=data)
-        # print(response.json())
+        print('Create lesson\n', response.json())
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
     def test_lesson_update(self):
+        """Тест обновления записи урока"""
         data = {
             "link_to_video": "https://youtube.com"
         }
-        response = self.client.patch(reverse(f'lesson/update/{4}/'), data=data)
-        print(response.status_code)
+        print(self.client.get('/lesson/1/').json())
+        response = self.client.patch('/lesson/update/1/', data=data)
+        print('Update lesson\n', response.json())
         self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_lesson_retrieve(self):
-        pass
+        """Тест вывода записи одного урока"""
+        response = self.client.get('/lesson/1/')
+        print('Retrieve lesson\n', response.json())
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_lesson_destroy(self):
-        pass
+        """Тест удаления записи урока из базы"""
+        print(self.client.get('/lesson/1/').json())
+        response = self.client.delete('/lesson/delete/1/')
+        print('Delete lesson\n', response.status_code)
+        self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
