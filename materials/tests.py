@@ -9,6 +9,7 @@ from users.models import User
 class LessonAPITestCase(APITestCase):
 
     def setUp(self):
+
         # Создаем экземпляр класса APIClient
         self.client = APIClient()
 
@@ -38,34 +39,36 @@ class LessonAPITestCase(APITestCase):
 
     # Тесты
     def test_lesson_list(self):
+
         """Тест вывода списка уроков"""
+
         response = self.client.get(reverse('materials:lessons'))
-        # response = self.client.get('/lesson/')
-        print('List lessons\n', response.json())
+        print('List lesson\n', response.json())
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.json(),
                           {
-                              'count': response.json()["count"],
-                              'next': None,
-                              'previous': None,
-                              'results':
+                              "count": 1,
+                              "next": None,
+                              "previous": None,
+                              "results":
                                   [
                                       {
-                                          'id': response.json()["results"][0]["id"],
-                                          'link_to_video': None,
-                                          'name': 'lesson_name_1',
-                                          'description': None,
-                                          'preview': None,
-                                          'course': response.json()["results"][0]["course"],
-                                          'master': response.json()["results"][0]["master"]
+                                          "id": self.lesson_1.id,
+                                          "link_to_video": None,
+                                          "name": "lesson_name_1",
+                                          "description": None,
+                                          "preview": None,
+                                          "course": self.course_1.id,
+                                          "master": self.user_tst.id
                                       }
                                   ]
                           }
                           )
 
     def test_lesson_create(self):
+
         """Тест создания урока"""
-        # print(self.course_1, self.user_tst)
+
         data = {
             "name": "lesson_name_2",
             "course": 1,
@@ -74,28 +77,67 @@ class LessonAPITestCase(APITestCase):
         }
 
         response = self.client.post(reverse('materials:lesson_create'), data=data)
+        less_id = response.json()["id"]
         print('Create lesson\n', response.json())
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(response.json(),
+                          {
+                              "id": less_id,
+                              "link_to_video": "youtube.com",
+                              "name": "lesson_name_2",
+                              "description": None,
+                              "preview": None,
+                              "course": 1,
+                              "master": 1
+                          }
+                          )
 
     def test_lesson_update(self):
+
         """Тест обновления записи урока"""
+
         data = {
-            "link_to_video": "https://youtube.com"
+            "link_to_video": "https://youtube.com",
+            "description": "DeScRiPtIoN"
         }
-        print(self.client.get('/lesson/1/').json())
-        response = self.client.patch('/lesson/update/1/', data=data)
+        response = self.client.patch(f'/lesson/update/{self.lesson_1.id}/', data=data)
         print('Update lesson\n', response.json())
         self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.json(),
+                          {
+                              "id": self.lesson_1.id,
+                              "link_to_video": "https://youtube.com",
+                              "name": "lesson_name_1",
+                              "description": "DeScRiPtIoN",
+                              "preview": None,
+                              "course": self.course_1.id,
+                              "master": self.user_tst.id
+                          }
+                          )
 
     def test_lesson_retrieve(self):
+
         """Тест вывода записи одного урока"""
-        response = self.client.get('/lesson/1/')
+
+        response = self.client.get(f'/lesson/{self.lesson_1.id}/')
         print('Retrieve lesson\n', response.json())
         self.assertEquals(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.json(),
+                          {
+                              "id": self.lesson_1.id,
+                              "link_to_video": None,
+                              "name": "lesson_name_1",
+                              "description": None,
+                              "preview": None,
+                              "course": self.course_1.id,
+                              "master": self.user_tst.id
+                          }
+                          )
 
     def test_lesson_destroy(self):
+
         """Тест удаления записи урока из базы"""
-        print(self.client.get('/lesson/1/').json())
-        response = self.client.delete('/lesson/delete/1/')
+
+        response = self.client.delete(f'/lesson/delete/{self.lesson_1.id}/')
         print('Delete lesson\n', response.status_code)
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
