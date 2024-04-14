@@ -19,12 +19,12 @@ class LessonAPITestCase(APITestCase):
         self.user_tst.save()
         self.client.force_authenticate(user=self.user_tst)
 
-        # Создаем объект модели Course
+        # Создаем объект модели курса (Course)
         self.course_1 = Course.objects.create(
             name="course_name_1"
         )
 
-        # Создаем объект модели Lesson
+        # Создаем объект модели урока (Lesson)
         self.lesson_1 = Lesson.objects.create(
             name="lesson_name_1",
             course=self.course_1,
@@ -36,6 +36,12 @@ class LessonAPITestCase(APITestCase):
         #     course=self.course_1,
         #     master = self.user_tst
         # )
+
+        # Создаем объект модели подписки (Subscription)
+        self.subscription = Subscription.objects.create(
+            user=self.user_tst,
+            course=self.course_1
+        )
 
     # Тесты
     def test_lesson_list(self):
@@ -141,3 +147,9 @@ class LessonAPITestCase(APITestCase):
         response = self.client.delete(f'/lesson/delete/{self.lesson_1.id}/')
         print('Delete lesson\n', response.status_code)
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_subscription_list(self):
+
+        """Тест проверки оформления подписки"""
+
+        pass
