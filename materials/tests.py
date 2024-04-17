@@ -13,14 +13,23 @@ class LessonAPITestCase(APITestCase):
         # Создаем экземпляр класса APIClient
         self.client = APIClient()
 
-        # Создаем юзера
+        # Создаем юзеров
         self.user_tst = User.objects.create(email="test@test.com", first_name='user_tst', password='user_tst')
         self.user_tst.set_password('user_tst')
         self.user_tst.save()
-        self.client.force_authenticate(user=self.user_tst)
+
+        self.user_user = User.objects.create(email="user@user.com", first_name='user_user', password='user')
+        self.user_user.set_password('user')
+        self.user_user.save()
+
+        # Проводим активацию юзера user_tst
+        # self.client.force_authenticate(user=self.user_tst)
 
         # Создаем юзера - модератора
-        self.user_moder = User.objects.create(email="mod@mod.com", first_name='moder', password='moder')
+        self.user_moder = User.objects.create(email="mod@mod.com",
+                                              first_name='moder',
+                                              password='moder',
+                                              role='moderator')
         self.user_moder.set_password('moder')
         self.user_moder.save()
 
@@ -55,6 +64,14 @@ class LessonAPITestCase(APITestCase):
 
         response = self.client.get(reverse('materials:lessons'))
         # print('List lesson\n', response.json())
+
+        # Проверка неавторизованного пользователя
+        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # Авторизация пользователя
+        self.client.force_authenticate(user=self.user_tst)
+
+        response = self.client.get(reverse('materials:lessons'))
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.json(),
                           {
@@ -80,29 +97,41 @@ class LessonAPITestCase(APITestCase):
 
         """Тест создания урока"""
 
-        self.client.force_authenticate(user=self.user_moder)
         data = {
             "name": "lesson_name_2",
             "course": 1,
-            "master": 2,
+            "master": 1,
             "link_to_video": "youtube.com"
         }
 
         response = self.client.post(reverse('materials:lesson_create'), data=data)
+
+        # Проверка неавторизованного пользователя
+        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # Проверка создания урока модератором
+        self.client.force_authenticate(user=self.user_moder)
+        response = self.client.post(reverse('materials:lesson_create'), data=data)
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Авторизация пользователя
+        self.client.force_authenticate(user=self.user_tst)
+
+        response = self.client.post(reverse('materials:lesson_create'), data=data)
         less_id = response.json()["id"]
-        print('Create lesson\n', response.json())
+        # print('Create lesson\n', response.json())
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        # self.assertEquals(response.json(),
-        #                   {
-        #                       "id": less_id,
-        #                       "link_to_video": "youtube.com",
-        #                       "name": "lesson_name_2",
-        #                       "description": None,
-        #                       "preview": None,
-        #                       "course": 1,
-        #                       "master": 1
-        #                   }
-        #                   )
+        self.assertEquals(response.json(),
+                          {
+                              "id": less_id,
+                              "link_to_video": "youtube.com",
+                              "name": "lesson_name_2",
+                              "description": None,
+                              "preview": None,
+                              "course": 1,
+                              "master": 1
+                          }
+                          )
 
     def test_lesson_update(self):
 
@@ -114,6 +143,14 @@ class LessonAPITestCase(APITestCase):
         }
         response = self.client.patch(f'/lesson/update/{self.lesson_1.id}/', data=data)
         # print('Update lesson\n', response.json())
+
+        # Проверка неавторизованного пользователя
+        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # Авторизация пользователя
+        self.client.force_authenticate(user=self.user_tst)
+
+        response = self.client.patch(f'/lesson/update/{self.lesson_1.id}/', data=data)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.json(),
                           {
@@ -133,6 +170,14 @@ class LessonAPITestCase(APITestCase):
 
         response = self.client.get(f'/lesson/{self.lesson_1.id}/')
         # print('Retrieve lesson\n', response.json())
+
+        # Проверка неавторизованного пользователя
+        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # Авторизация пользователя
+        self.client.force_authenticate(user=self.user_tst)
+
+        response = self.client.get(f'/lesson/{self.lesson_1.id}/')
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(response.json(),
                           {
@@ -152,11 +197,27 @@ class LessonAPITestCase(APITestCase):
 
         response = self.client.delete(f'/lesson/delete/{self.lesson_1.id}/')
         # print('Delete lesson\n', response.status_code)
+
+        # Проверка неавторизованного пользователя
+        self.assertEquals(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # Проверка удаления урока модератором
+        self.client.force_authenticate(user=self.user_moder)
+        response = self.client.delete(f'/lesson/delete/{self.lesson_1.id}/')
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        # Авторизация пользователя
+        self.client.force_authenticate(user=self.user_tst)
+
+        response = self.client.delete(f'/lesson/delete/{self.lesson_1.id}/')
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_subscription_list(self):
 
         """Тест вывода списка подписок"""
+
+        # Авторизация пользователя
+        self.client.force_authenticate(user=self.user_tst)
 
         response = self.client.get(reverse('materials:subscription'))
         # print('List subscription', response.json())
@@ -174,6 +235,9 @@ class LessonAPITestCase(APITestCase):
     def test_subscription_create(self):
 
         """Тест проверки оформления подписки"""
+
+        # Авторизация пользователя
+        self.client.force_authenticate(user=self.user_tst)
 
         data = {
             "course": self.course_1.id
