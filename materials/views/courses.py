@@ -1,5 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+
+from materials.paginators import MaterialsPaginator
 from users.permissions import IsModer, IsMaster
 from materials.models import Course
 from users.models import Roles
@@ -9,6 +11,7 @@ from materials.serializers.courses_serializers import CourseSerializer, CreateCo
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     default_serializer = CourseSerializer
+    pagination_class = MaterialsPaginator
     dict_serializer = {
         'create': CreateCourseSerializer,
     }
