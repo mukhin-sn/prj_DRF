@@ -26,10 +26,10 @@ class SubscriptionAPIView(APIView):
     #     obj.save()
 
     def post(self, *args, **kwargs):
-        # получаем из запроса юзера
+        # получаем юзера из запроса
         user = self.request.user
 
-        # получаем из запроса id - курса
+        # получаем id курса из запроса
         course_id = self.request.data.get("course")
 
         # получаем данные о подписке (если подписки нет, то создаем подписку)
