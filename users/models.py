@@ -25,6 +25,13 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    class Meta:
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'пользователи'
+
+    def __str__(self):
+        return self.email
+
 
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, max_length=100, verbose_name='пользователь')
@@ -33,3 +40,12 @@ class Payment(models.Model):
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='оплаченный урок', **NULLABLE)
     pay_amount = models.PositiveIntegerField(verbose_name='сумма оплаты')
     pay_method = models.CharField(max_length=25, verbose_name='метод оплаты')  # cash or bank transfer
+    pay_session_id = models.CharField(max_length=255, verbose_name='ID сессии', **NULLABLE)
+    pay_link = models.URLField(max_length=511, verbose_name='ссылка на оплату', **NULLABLE)
+
+    class Meta:
+        verbose_name = 'оплата'
+        verbose_name_plural = 'оплаты'
+
+    def __str__(self):
+        return self.pay_amount
